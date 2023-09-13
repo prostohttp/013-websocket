@@ -1,0 +1,105 @@
+<%- include('../theHeader.ejs') %>
+<style>
+	.tab-head {
+		display: flex;
+		justify-content: center;
+		gap: 20px;
+	}
+
+	.tab:hover {
+		cursor: pointer;
+	}
+
+	.active {
+		border-bottom: 4px solid #000;
+	}
+
+	.hidden {
+		display: none;
+	}
+</style>
+<h1 class="text-3xl text-center font-bold mb-[30px] tab-head">
+	<span class="tab active" data-tab="login">Вход</span>
+	<span class="tab" data-tab="register">Регистрация</span>
+</h1>
+<div class="register hidden flex justify-center">
+	<form method="post" action="/user/signup">
+		<label for="userName" class="block mb-[2px] mt-[20px] font-bold">Имя</label>
+		<input
+			required
+			type="text"
+			name="userName"
+			id="userName"
+			class="border-[1px] rounded-[4px] h-[40px] px-[20px] w-[400px] border-[#ccc] mb-[20px]"
+		/>
+		<label for="userLogin" class="block mb-[2px] font-bold">Логин</label>
+		<input
+			required
+			type="text"
+			name="userLogin"
+			id="userLogin"
+			class="border-[1px] rounded-[4px] h-[40px] px-[20px] w-[400px] border-[#ccc] mb-[20px]"
+		/>
+		<label for="userPassword" class="block mb-[2px] font-bold">Пароль</label>
+		<input
+			required
+			type="password"
+			name="userPassword"
+			id="userPassword"
+			class="border-[1px] rounded-[4px] h-[40px] px-[20px] w-[400px] border-[#ccc] mb-[20px]"
+		/>
+		<button
+			class="py-[10px] px-[20px] bg-[red] text-white uppercase rounded-[5px] hover:bg-[black] flex"
+		>
+			Создать
+		</button>
+	</form>
+</div>
+<div class="login flex justify-center">
+	<form method="post" action="/user/login">
+		<div>
+			<% if(error.message) { %>
+			<p class="text-white bg-[#333] text-center rounded-[3px] py-[7px] px-[20px] mb-[10px]"><%= error.message %></p>
+			<% } %>
+		</div>
+		<label for="userLogin" class="block mb-[2px] font-bold">Логин</label>
+		<input
+			required
+			type="text"
+			name="userLogin"
+			id="userLogin"
+			class="border-[1px] rounded-[4px] h-[40px] px-[20px] w-[400px] border-[#ccc] mb-[20px]"
+		/>
+		<label for="userPassword" class="block mb-[2px] font-bold">Пароль</label>
+		<input
+			required
+			type="password"
+			name="userPassword"
+			id="userPassword"
+			class="border-[1px] rounded-[4px] h-[40px] px-[20px] w-[400px] border-[#ccc] mb-[20px]"
+		/>
+		<button
+			class="py-[10px] px-[20px] bg-[red] text-white uppercase rounded-[5px] hover:bg-[black] flex"
+		>
+			Войти
+		</button>
+	</form>
+</div>
+<script>
+	const register = document.querySelector(".register");
+	const login = document.querySelector(".login");
+	const tabRegister = document.querySelector("[data-tab=register]");
+	const tabLogin = document.querySelector("[data-tab=login]");
+
+	document.addEventListener("click", (e) => {
+		if (e.target.classList.contains("tab")) {
+			const { tab } = e.target.dataset;
+
+			register.classList.toggle("hidden", tab !== "register");
+			login.classList.toggle("hidden", tab !== "login");
+			tabRegister.classList.toggle("active", tab === "register");
+			tabLogin.classList.toggle("active", tab === "login");
+		}
+	});
+</script>
+<%- include('../theFooter.ejs') %>
