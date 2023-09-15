@@ -1,9 +1,16 @@
 <%- include('../theHeader.ejs') %>
-<h1 class="text-3xl text-center font-bold mb-[30px]">
-  Личный кабинет
-</h1>
+<h1 class="text-3xl text-center font-bold mb-[30px]">Личный кабинет</h1>
 <ul>
-  <li><strong>Имя: </strong><%= user.userName %></li>
-  <li><strong>Логин: </strong><%= user.userLogin %></li>
+	<li><strong>Имя: </strong><%= user.userName %></li>
+	<li><strong>Логин: </strong><%= user.userLogin %></li>
+	<li>
+		<form action="/user/logout" method="get">
+			<button
+				class="py-[10px] px-[30px] bg-[red] mt-[10px] text-white uppercase rounded-[5px] hover:bg-[black] flex"
+			>
+				Выйти
+			</button>
+		</form>
+	</li>
 </ul>
 <%- include('../theFooter.ejs') %>

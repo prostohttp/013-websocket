@@ -4,5 +4,9 @@
     <p>&copy; <%=  new Date().getFullYear(); %> Книги</p>
   </section>
 </footer>
+<script>
+  const userMenuItem = document.querySelector(".auth")
+  document.cookie.includes("user") ? userMenuItem.classList.add("hidden") : userMenuItem.classList.remove("hidden");
+</script>
 </body>
 </html>

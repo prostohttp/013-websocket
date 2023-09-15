@@ -1,5 +1,5 @@
 const User = require("../model/User");
-
+const { v4: uuidv4 } = require("uuid");
 const addUser = async (req, res) => {
 	const { userName, userLogin, userPassword } = req.body;
 	const user = new User({
@@ -21,27 +21,38 @@ const addUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-	req.session.userId = Math.random();
-	console.log("Успешная аутентификация", req.session.userId);
-	res.json(req.user);
+	req.session.userId = uuidv4();
+	const user = {
+		userId: req.session.userId,
+		userName: req.user.userName,
+		userLogin: req.user.userLogin,
+	};
+	const userId = req.session.userId;
+	res.json({user, userId});
 };
 
 const profileUser = async (req, res) => {
-	//TODO сделать проверку на авторизацию
-	if(req.session.userId) {
-		res.json(req.user);
-	} else {
-		res.status(401).send({ error: "Необходима авторизация" });
-	}
+
 };
 
 const getLogin = (req, res) => {
 	res.json(req.user);
 };
 
+const logout = (req, res) => {
+	req.session.destroy((err) => {
+		if (err) {
+			console.error('Ошибка при уничтожении сессии:', err);
+    } else {
+			res.redirect('/');
+    }
+  });
+}
+
 module.exports = {
 	add: addUser,
 	login: loginUser,
 	profile: profileUser,
 	getLogin: getLogin,
+	logout: logout
 };

@@ -4,15 +4,27 @@ const DB_PORT = process.env.DB_PORT || 3334;
 const DB_URL = process.env.DB_URL || "http://backend-mongo";
 
 const getLogin = (req, res) => {
-	res.render("user/login", { error: {} });
+	const myCookies = req.cookies.user;
+	if (myCookies) {
+		res.redirect("/user/me");
+	} else {
+		res.render("user/login", { error: {} });
+	}
 };
 
+const getLogout = async (req, res) => {
+	await api.fetch(`${DB_URL}:${DB_PORT}/user/logout`)
+	res.clearCookie("user");
+	res.clearCookie("userId");
+	res.redirect("/");
+}
+
 const getMe = async (req, res) => {
-	const user = await api.fetch(`${DB_URL}:${DB_PORT}/user/me`);
-	if (!user) {
-		res.render("user/login", {error: {message: "Для доступа в ЛК войдите на сайт"}} );
+	const myCookies = req.cookies.user;
+	if (myCookies) {
+		res.render("user/me", { user: myCookies });
 	} else {
-    res.redirect("/user/me");
+		res.render("user/login", { error: {message: "Войдите или зарегистрируйтесь"} });
 	}
 };
 
@@ -22,12 +34,18 @@ const postLogin = async (req, res) => {
 		userLogin,
 		userPassword,
 	};
-	const user = await api.fetch(`${DB_URL}:${DB_PORT}/user/login`, "POST", data);
+	const {user, userId} = await api.fetch(
+		`${DB_URL}:${DB_PORT}/user/login`,
+		"POST",
+		data
+	);
 	if (!user) {
 		res.render("user/login", {
 			error: { message: "Неправильный логин или пароль" },
 		});
 	} else {
+		res.cookie("user", user);
+		res.cookie("userId", userId);
 		res.render("user/me", { user });
 	}
 };
@@ -45,6 +63,7 @@ const postSignup = async (req, res) => {
 
 module.exports = {
 	getLogin: getLogin,
+	logout: getLogout,
 	postLogin: postLogin,
 	getMe: getMe,
 	postSignup: postSignup,

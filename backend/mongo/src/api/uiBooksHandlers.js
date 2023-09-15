@@ -99,10 +99,15 @@ const updateBookHandler = async (req, res) => {
 	}
 };
 
+const createBookHandler = (req, res) => {
+
+}
+
 module.exports = {
 	get: getBookHandler,
 	getAll: getAllBooksHandler,
 	add: addBookHandler,
 	delete: deleteBookHandler,
-	update: updateBookHandler
+	update: updateBookHandler,
+	create: createBookHandler
 };

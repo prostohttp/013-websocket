@@ -2,11 +2,14 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("./api/passport");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 const apiBooksRouter = require("./routes/apiBookRouter");
 const uiBooksRouter = require("./routes/uiBookRouter");
 const apiUserRouter = require("./routes/apiUserRouter");
 const uiUserRouter = require("./routes/uiUserRouter");
+const corsMiddleware = require("./middleware/cors");
+const authMiddleware = require("./middleware/auth");
 
 const app = express();
 
@@ -15,11 +18,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
 	session({
 		secret: "SECRET",
-		resave: false,
-		saveUninitialized: false,
-		cookie: { secure: true },
 	})
 );
+
+app.use(cookieParser());
+app.use(corsMiddleware);
+app.use(authMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
