@@ -1,8 +1,5 @@
 module.exports = (req, res, next) => {
-	if (req.cookies && req.cookies.userId) {
-		req.auth = {
-			userId: req.cookies.userId,
-		};
-	}
-	next();
+  const userId = req.cookies.userId || undefined;
+  req.userId = userId;
+  next()
 };

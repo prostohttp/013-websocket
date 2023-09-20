@@ -24,11 +24,12 @@ const options = {
 passport.use("local", new LocalStrategy(options, verify));
 
 passport.serializeUser((user, cb) => {
-	cb(null, user._id);
+	cb(null, user._id.toString());
 });
 
 passport.deserializeUser(async (id, cb) => {
 	const user = await User.findById(id).exec();
+	console.log("deserializeUser", user);
 	if (!user) {
 		cb({ error: "Такой пользователь не найден" });
 	} else {

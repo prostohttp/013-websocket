@@ -30,5 +30,105 @@
 		</div>
 	</div>
 </div>
+<div id="comments" class="my-[30px]">
+	<h2 class="text-[25px] font-bold mb-[10px]">Комментарии</h2>
+	<div class="write-comment flex flex-col max-w-[500px] gap-[15px]">
+		<% if (!userName) { %>
+		<input
+			type="text"
+			name="name"
+			id="name"
+			required
+			placeholder="Ваше имя"
+			class="h-[40px] border-[1px] px-[20px] rounded-[4px]"
+		/>
+		<% } %>
+		<textarea
+			name="comment"
+			required
+			id="comment"
+			class="border-[1px] px-[20px] rounded-[4px] py-[15px]"
+			placeholder="Ваш комментарий"
+		></textarea>
+		<button
+			class="bg-[blue] text-white px-[20px] py-[10px] rounded-[4px]"
+			id="send-comment"
+		>
+			Отправить
+		</button>
+	</div>
+	<div class="saved_comments">
+		<% if (comments) { %>
+			<% for (const comment of comments) { %>
+			<div
+				class="one-comment border-[1px] py-[10px] px-[20px] my-[10px] max-w-[500px]"
+			>
+				<h3 class="text-[20px] font-semibold"><%= comment.name%></h3>
+				<p class="text-[15px]"><%= comment.comment %></p>
+			</div>
+			<% } %>
+		<% } %>
+	</div>
+	<div class="comments"></div>
+</div>
+
+<script>
+	const socket = io();
+	const comments = document.querySelector("#comments");
+	const commentButton = document.querySelector("#send-comment");
+	const name = document.querySelector("#name");
+	const comment = document.querySelector("#comment");
+
+	const getComment = (msg) => {
+		return `
+			<div class="one-comment border-[1px] py-[10px] px-[20px] my-[10px] max-w-[500px]">
+				<h3 class="text-[20px] font-semibold">${msg.name}</h3>
+				<p class="text-[15px]">${msg.comment}</p>
+			</div>
+		`;
+	};
+
+	socket.on("add-comment", (msg) => {
+		const comment = getComment(msg);
+		comments.insertAdjacentHTML("beforeend", comment);
+	});
+	commentButton.addEventListener("click", async (e) => {
+		e.preventDefault();
+		let userNameFromCookie;
+		if (document.cookie.includes(";")) {
+			userNameFromCookie = document.cookie
+				.split(";")
+				.map((cookie) => cookie.trim())
+				.find((cookie) => cookie.startsWith("userName="))
+				.split("=")[1];
+		} else {
+			userNameFromCookie = null;
+		}
+
+		const userName = userNameFromCookie
+			? decodeURIComponent(userNameFromCookie)
+			: name?.value;
+
+		socket.emit("add-comment", {
+			name: userName,
+			comment: comment.value,
+		});
+		const userId = window.location.href.split("/").pop();
+
+		try {
+			await fetch(
+				`http://localhost:3334/comments/add/?userId=${decodeURIComponent(
+					userId
+				)}
+				&name=${decodeURIComponent(userName)}
+				&comment=${decodeURIComponent(comment.value)}`
+			);
+		} catch (error) {
+			console.log(error);
+		}
+		name ? (name.value = "") : null;
+		comment.value = "";
+	});
+</script>
 
 <%- include('../theFooter.ejs') %>

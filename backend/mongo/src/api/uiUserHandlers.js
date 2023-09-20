@@ -23,36 +23,22 @@ const addUser = async (req, res) => {
 const loginUser = async (req, res) => {
 	req.session.userId = uuidv4();
 	const user = {
-		userId: req.session.userId,
 		userName: req.user.userName,
 		userLogin: req.user.userLogin,
 	};
 	const userId = req.session.userId;
-	res.json({user, userId});
+	res.json({ user, userId });
 };
 
 const profileUser = async (req, res) => {
-
+	res.json({ isAuthorized: true });
 };
 
-const getLogin = (req, res) => {
-	res.json(req.user);
-};
-
-const logout = (req, res) => {
-	req.session.destroy((err) => {
-		if (err) {
-			console.error('Ошибка при уничтожении сессии:', err);
-    } else {
-			res.redirect('/');
-    }
-  });
-}
+const getLogin = (req, res) => {};
 
 module.exports = {
 	add: addUser,
 	login: loginUser,
 	profile: profileUser,
 	getLogin: getLogin,
-	logout: logout
 };

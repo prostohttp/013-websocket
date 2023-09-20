@@ -109,5 +109,5 @@ module.exports = {
 	add: addBookHandler,
 	delete: deleteBookHandler,
 	update: updateBookHandler,
-	create: createBookHandler
+	create: createBookHandler,
 };

@@ -7,11 +7,19 @@ const uiUserRouter = express.Router();
 uiUserRouter.post("/signup", uiUser.add);
 uiUserRouter.post(
 	"/login",
-	passport.authenticate("local", { failureRedirect: "/user/login" }),
+	passport.authenticate("local", { failureRedirect: "/login" }),
 	uiUser.login
 );
 uiUserRouter.get("/login", uiUser.getLogin);
-uiUserRouter.get("/me", uiUser.profile);
-uiUserRouter.get("/logout", uiUser.logout);
+uiUserRouter.get(
+	"/me",
+	(req, res, next) => {
+		if (!req.isAuthenticated()) {
+			return res.json({ isAuthorized: false });
+		}
+		next();
+	},
+	uiUser.profile
+);
 
 module.exports = uiUserRouter;

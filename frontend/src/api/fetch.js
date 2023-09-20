@@ -1,7 +1,7 @@
-const api = async (url, method = "GET", data = undefined) => {
+const apiFetch = async (url, method = "GET", data = undefined) => {
 	try {
 		const request = await fetch(url, {
-			method,
+			method: method,
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -12,5 +12,4 @@ const api = async (url, method = "GET", data = undefined) => {
 		console.log(error);
 	}
 };
-
-module.exports = { fetch: api };
+module.exports = { fetch: apiFetch };

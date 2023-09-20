@@ -22,13 +22,13 @@ services:
 
   backend-redis:
     build: ./backend/redis
-    restart: always
     ports:
       - "3333:3333"
     environment:
       CHOKIDAR_USEPOLLING: true
       PORT: "3333"
       REDIS_URL: redis://redis
+    restart: always
     depends_on:
       - redis
     volumes:
@@ -37,9 +37,9 @@ services:
 
   backend-mongo:
     build: ./backend/mongo
-    restart: always
     ports:
       - "3334:3334"
+    restart: always
     environment:
       PORT: "3334"
       URL_DB: mongodb://root:example@mongo:27017/
@@ -56,6 +56,7 @@ services:
       - ./data/redis:/data
     ports:
       - "6379:6379"
+    restart: always
 
   mongo:
     image: mongo
